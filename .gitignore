@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Version locale en cours, non publiee
+_version_locale_non_poussee/
+.Rhistory

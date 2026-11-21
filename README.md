@@ -16,7 +16,7 @@ Vicon data and QoM computation** rather than duplicating it — see
 ## Repository structure
 
 ```
-Article2_Posture_QoM/
+Article2_Postures_QoM/
 ├── src/
 │   ├── config.py                        # paths and processing parameters (Python)
 │   ├── config_r.R                       # same constants, R side
@@ -25,7 +25,9 @@ Article2_Posture_QoM/
 │   ├── 03_lmm_analysis.R                # PRIMARY ANALYSIS: linear mixed models (see below)
 │   ├── 04_friedman_robustness.R         # Friedman/Wilcoxon non-parametric robustness check
 │   ├── 05_dyad_cluster_bootstrap.R      # dyad-cluster bootstrap (5,000 resamples) for the posture contrasts
-│   └── 06_figures.R                     # Figure 2: head/wrist QoM boxplots by posture
+│   ├── 06_figures.R                     # Figure 2: head/wrist QoM boxplots by posture (English labels)
+│   ├── 06_figures_fr.R                  # Figure 2 with French labels (figure2_combined_fr.png)
+│   └── 07_order_effect.R                # exploratory order effect (rank 1/2/3), Friedman per segment
 ├── data/
 │   ├── raw/            # comparison_qom_long.xlsx: copied from Article1_MP_VICON (see below)
 │   ├── intermediate/   # generated automatically, not versioned
@@ -104,6 +106,20 @@ reported here differ from the ones in the original M2 thesis**; wrist/upper-limb
 values are unaffected, since the wrist QoM definition did not change. `posture`
 is ordered `SEATED < SEMI < STANDING` throughout.
 
+**Update (21 Nov 2026): marker-swap correction.** `data/raw/comparison_qom_long.xlsx` now
+contains the Vicon QoM *after* the correction of brief marker label swaps (13 recordings,
+upper-arm or forearm length deviating by more than 25 % from its median), i.e. the values
+`QOM_WRIST_V3D100_norm` / `QOM_HEAD_V3D100_norm` of `Article1_MP_VICON/data/results/per_recording_results.csv`
+(Vicon at 100 Hz, divided by the median shoulder width of each recording). The previous table
+predated this correction; wrist QoM differed in 10 recordings. All files in `data/final/` were
+regenerated with this corrected table and match the numbers reported in the article.
+
+**Posture order.** Postures were counterbalanced with a 3-order Latin square applied in turn to
+successive dyads (D01, D04, ...: SEATED, SEMI, STANDING; D02, D05, ...: SEMI, STANDING, SEATED;
+D03, D06, ...: STANDING, SEATED, SEMI). The conversation scenarios were always presented in the
+same order (desert island, future house, dinner menu), so presentation rank and scenario are
+confounded. This order is encoded in `07_order_effect.R`.
+
 ## Reproducing the analysis
 
 Run the scripts in order from the `src/` directory:
@@ -116,6 +132,8 @@ Rscript 03_lmm_analysis.R
 Rscript 04_friedman_robustness.R
 Rscript 05_dyad_cluster_bootstrap.R
 Rscript 06_figures.R
+Rscript 06_figures_fr.R
+Rscript 07_order_effect.R
 ```
 
 `01_prepare_posture_data.py` asserts 20 dyads / 40 subjects / 120 rows on load,
